@@ -1,48 +1,36 @@
 <?php
-session_start();
 include 'config/config.php';
-
-// Cek Cookie untuk fitur "Ingat Saya"
-if (isset($_COOKIE['login_id'])) {
-    $_SESSION['admin_id'] = $_COOKIE['login_id'];
-}
-
-// Jika sudah login, langsung arahkan ke dashboard
-if (isset($_SESSION['admin_id'])) {
-    header("Location: admin/dashboard_admin.php");
-    exit;
-}
-
+$pesan = "";
 $error = "";
 
-if (isset($_POST['login'])) {
-    $user_input = mysqli_real_escape_string($conn, $_POST['username_email']);
-    $password   = $_POST['password'];
-    $remember   = isset($_POST['remember']);
+if (isset($_POST['register'])) {
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $email    = mysqli_real_escape_string($conn, $_POST['email']);
+    $password = $_POST['password'];
+    $confirm  = $_POST['confirm_password'];
 
-    // Cek apakah input berupa username atau email
-    $result = mysqli_query($conn, "SELECT * FROM admins WHERE username = '$user_input' OR email = '$user_input'");
-    
-    if (mysqli_num_rows($result) === 1) {
-        $row = mysqli_fetch_assoc($result);
-        
-        // Verifikasi password (pastikan saat register menggunakan password_hash)
-        if (password_verify($password, $row['password'])) {
-            $_SESSION['admin_id'] = $row['id'];
-            $_SESSION['username'] = $row['username'];
-
-            // Jika "Ingat Saya" dicentang, buat cookie selama 30 hari
-            if ($remember) {
-                setcookie('login_id', $row['id'], time() + (86400 * 30), "/");
-            }
-
-            header("Location: admin/dashboard_admin.php");
-            exit;
-        } else {
-            $error = "Password yang Anda masukkan salah!";
-        }
+    // Validasi apakah password dan konfirmasi password sama
+    if ($password !== $confirm) {
+        $error = "Konfirmasi password tidak cocok!";
     } else {
-        $error = "Username atau Email tidak ditemukan!";
+        // Cek apakah username atau email sudah terdaftar
+        $cek_data = mysqli_query($conn, "SELECT * FROM admins WHERE username = '$username' OR email = '$email'");
+        
+        if (mysqli_num_rows($cek_data) > 0) {
+            $error = "Username atau Email sudah digunakan!";
+        } else {
+            // Enkripsi password menggunakan password_hash() agar aman
+            $password_hashed = password_hash($password, PASSWORD_DEFAULT);
+
+            // Masukkan data ke database
+            $query = "INSERT INTO admins (username, email, password) VALUES ('$username', '$email', '$password_hashed')";
+            
+            if (mysqli_query($conn, $query)) {
+                $pesan = "Registrasi berhasil! Silakan <a href='login.php'>Login</a>.";
+            } else {
+                $error = "Terjadi kesalahan, coba lagi.";
+            }
+        }
     }
 }
 ?>
@@ -52,7 +40,7 @@ if (isset($_POST['login'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin - Panel Islami</title>
+    <title>Registrasi Admin - Panel Islami</title>
     <!-- Google Fonts untuk kesan elegan -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -69,7 +57,7 @@ if (isset($_POST['login'])) {
             height: 100vh; 
             margin: 0; 
             position: relative;
-            overflow: hidden;
+            overflow: hidden; /* Menghilangkan scrollbar secara total */
         }
 
         /* Aksen dekoratif latar belakang ala Islami/Geometris tipis */
@@ -85,9 +73,9 @@ if (isset($_POST['login'])) {
             z-index: 0;
         }
 
-        .login-card { 
+        .register-card { 
             background: #ffffff; 
-            padding: 35px 30px; 
+            padding: 25px 30px; 
             border-radius: 16px; 
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); 
             width: 380px; 
@@ -96,50 +84,48 @@ if (isset($_POST['login'])) {
             border-top: 5px solid #d4af37; /* Aksen kuning emas */
         }
 
-        .login-header {
+        .register-header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 18px;
         }
 
-        .login-header h2 {
-            margin: 0 0 5px 0;
+        .register-header h2 {
+            margin: 0 0 3px 0;
             color: #0f2a20;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
         }
 
-        .login-header p {
+        .register-header p {
             margin: 0;
             color: #666;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .form-group { 
-            margin-bottom: 18px; 
+            margin-bottom: 12px; 
         }
 
         .form-group label { 
             display: block; 
-            margin-bottom: 6px; 
+            margin-bottom: 4px; 
             font-weight: 600; 
-            font-size: 13px;
+            font-size: 12px;
             color: #1b3b2f;
         }
 
-        .form-group input[type="text"], 
-        .form-group input[type="password"] { 
+        .form-group input { 
             width: 100%; 
-            padding: 11px 14px; 
+            padding: 9px 12px; 
             box-sizing: border-box; 
             border: 1px solid #d1d8d4; 
             border-radius: 8px; 
-            font-size: 14px;
+            font-size: 13px;
             background-color: #fafbfc;
             transition: all 0.3s ease;
         }
 
-        .form-group input[type="text"]:focus, 
-        .form-group input[type="password"]:focus {
+        .form-group input:focus {
             border-color: #1b3b2f;
             background-color: #fff;
             outline: none;
@@ -175,8 +161,8 @@ if (isset($_POST['login'])) {
         }
 
         .password-container svg {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             fill: none;
             stroke: #1b3b2f;
             stroke-width: 2;
@@ -184,43 +170,26 @@ if (isset($_POST['login'])) {
             stroke-linejoin: round;
         }
 
-        .checkbox-group { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            font-size: 13px; 
-            margin-bottom: 20px; 
-            color: #444;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            accent-color: #1b3b2f;
-            width: 15px;
-            height: 15px;
-            cursor: pointer;
-            vertical-align: middle;
-            margin-right: 4px;
-        }
-
-        .btn-login { 
+        .btn-register { 
             width: 100%; 
-            padding: 12px; 
+            padding: 10px; 
             background-color: #1b3b2f; /* Hijau tua Islami */
             border: none; 
             color: white; 
             border-radius: 8px; 
             font-weight: 700; 
-            font-size: 15px;
+            font-size: 14px;
             cursor: pointer; 
             transition: background 0.3s ease, transform 0.1s ease;
             box-shadow: 0 4px 12px rgba(27, 59, 47, 0.2);
+            margin-top: 4px;
         }
 
-        .btn-login:hover { 
+        .btn-register:hover { 
             background-color: #1ec54aff; 
         }
 
-        .btn-login:active {
+        .btn-register:active {
             transform: scale(0.98);
         }
 
@@ -228,18 +197,36 @@ if (isset($_POST['login'])) {
             background-color: #fdf2f2;
             border: 1px solid #f8d7da;
             color: #c82333; 
-            padding: 10px;
+            padding: 8px;
             border-radius: 6px;
-            font-size: 13px; 
-            margin-bottom: 15px; 
+            font-size: 12px; 
+            margin-bottom: 12px; 
             text-align: center; 
             font-weight: 500;
         }
 
+        .success { 
+            background-color: #f2fdf4;
+            border: 1px solid #d4edda;
+            color: #28a745; 
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 12px; 
+            margin-bottom: 12px; 
+            text-align: center; 
+            font-weight: 500;
+        }
+
+        .success a {
+            color: #1b3b2f;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
         .links { 
             text-align: center; 
-            margin-top: 20px; 
-            font-size: 13px; 
+            margin-top: 15px; 
+            font-size: 12px; 
             color: #666;
         }
 
@@ -258,30 +245,38 @@ if (isset($_POST['login'])) {
 </head>
 <body>
 
-<div class="login-card">
-    <div class="login-header">
-        <h2>Login Admin</h2>
+<div class="register-card">
+    <div class="register-header">
+        <h2>Register Admin</h2>
         <h2 style="color: #158533ff; font-size: 28px;">FalakTV.id</h2>
-        <p>Silakan masuk ke panel pengelola</p>
+        <p>Buat akun pengelola baru</p>
     </div>
     
     <?php if (!empty($error)) : ?>
         <div class="error"><?php echo $error; ?></div>
     <?php endif; ?>
 
+    <?php if (!empty($pesan)) : ?>
+        <div class="success"><?php echo $pesan; ?></div>
+    <?php endif; ?>
+
     <form action="" method="POST">
         <div class="form-group">
-            <label>Username / Email</label>
-            <input type="text" name="username_email" required placeholder="Masukkan username atau email">
+            <label>Username</label>
+            <input type="text" name="username" required placeholder="Masukkan username">
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" required placeholder="Masukkan email">
         </div>
 
         <div class="form-group">
             <label>Password</label>
             <div class="password-container">
-                <input type="password" name="password" id="password" required placeholder="Masukkan password">
-                <span id="togglePassword" onclick="togglePass()" title="Lihat/Sembunyikan Password">
-                    <!-- Ikon Mata Terbuka (Default) -->
-                    <svg id="eyeIcon" viewBox="0 0 24 24">
+                <input type="password" name="password" id="password" required placeholder="Buat password">
+                <span onclick="togglePass('password', this)" title="Lihat/Sembunyikan Password">
+                    <svg class="eyeIcon" viewBox="0 0 24 24">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                         <circle cx="12" cy="12" r="3"></circle>
                     </svg>
@@ -289,33 +284,41 @@ if (isset($_POST['login'])) {
             </div>
         </div>
 
-        <div class="checkbox-group">
-            <label><input type="checkbox" name="remember"> Ingat Saya</label>
+        <div class="form-group">
+            <label>Konfirmasi Password</label>
+            <div class="password-container">
+                <input type="password" name="confirm_password" id="confirm_password" required placeholder="Ulangi password">
+                <span onclick="togglePass('confirm_password', this)" title="Lihat/Sembunyikan Password">
+                    <svg class="eyeIcon" viewBox="0 0 24 24">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </span>
+            </div>
         </div>
 
-        <button type="submit" name="login" class="btn-login">Masuk</button>
+        <button type="submit" name="register" class="btn-register">Daftar</button>
     </form>
-    
+
     <div class="links">
-        <a href="forgot_password.php">Lupa Password?</a> | 
-        <a href="register.php">Buat Akun Baru</a>
+        Sudah punya akun? <a href="login.php">Login di sini</a>
     </div>
 </div>
 
 <script>
-    function togglePass() {
-        const passwordInput = document.getElementById('password');
-        const eyeIcon = document.getElementById('eyeIcon');
+    function togglePass(id, el) {
+        const inputField = document.getElementById(id);
+        const eyeIcon = el.querySelector('.eyeIcon');
         
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
+        if (inputField.type === 'password') {
+            inputField.type = 'text';
             // Ubah ke ikon mata tercoret (Sembunyikan)
             eyeIcon.innerHTML = `
                 <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
                 <line x1="1" y1="1" x2="23" y2="23"></line>
             `;
         } else {
-            passwordInput.type = 'password';
+            inputField.type = 'password';
             // Kembalikan ke ikon mata terbuka (Lihat)
             eyeIcon.innerHTML = `
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
