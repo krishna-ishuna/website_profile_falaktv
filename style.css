@@ -1,3 +1,4 @@
+/* 1. VARIABLES & BASE SETUP */
 :root {
     --primary-color: #007a04;
     --primary-rgb: 0, 122, 4;
@@ -5,15 +6,69 @@
     --accent-color: #fff700;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     color: #333;
 }
 
-html {
-    scroll-behavior: smooth;
+/* 2. UTILITIES & GLOBAL TYPOGRAPHY */
+.section-padding {
+    padding: 80px 0;
+    transition: padding 0.3s ease;
 }
 
+.about-section {
+    background-color: #ffffff;
+}
+
+.features-section {
+    background-color: #f8f9fc;
+}
+
+.section-title {
+    position: relative;
+    padding-bottom: 15px;
+    margin-bottom: 40px;
+    font-weight: 700;
+    font-size: 2rem;
+    transition: font-size 0.3s ease;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: var(--accent-color);
+}
+
+/* --- Global Buttons --- */
+.btn-primary-custom {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s;
+    border: none;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary-custom:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(13, 148, 136, 0.4);
+}
+
+/* 3. NAVBAR */
 .navbar {
     transition: all 0.3s ease-in-out;
     padding: 15px 0;
@@ -50,17 +105,20 @@ html {
     color: var(--accent-color) !important;
 }
 
+/* 4. HERO SECTION */
 .hero-section {
-    padding: 120px 0 80px;
+    padding: 200px 0 80px;
     background: linear-gradient(135deg, #f8f9fa 0%, #e0f2fe 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
+    transition: padding 0.3s ease;
 }
 
 .hero-text h1 {
     font-weight: 700;
     font-size: 3rem;
+    transition: font-size 0.3s ease;
 }
 
 .hero-text h1 span {
@@ -72,25 +130,7 @@ html {
     color: #666;
     font-size: 1.5rem;
     margin-bottom: 20px;
-}
-
-.btn-primary-custom {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 12px 30px;
-    border-radius: 50px;
-    font-weight: 600;
-    transition: all 0.3s;
-    border: none;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.btn-primary-custom:hover {
-    background-color: var(--secondary-color);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(13, 148, 136, 0.4);
-    color: white;
+    transition: font-size 0.3s ease;
 }
 
 .hero-image img {
@@ -99,49 +139,18 @@ html {
 }
 
 @keyframes float {
-    0% {
+
+    0%,
+    100% {
         transform: translateY(0px);
     }
 
     50% {
         transform: translateY(-15px);
     }
-
-    100% {
-        transform: translateY(0px);
-    }
 }
 
-.section-padding {
-    padding: 80px 0;
-}
-
-.about-section {
-    background-color: #ffffff;
-}
-
-.section-title {
-    position: relative;
-    padding-bottom: 15px;
-    margin-bottom: 40px;
-    font-weight: 700;
-}
-
-.section-title::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background-color: var(--accent-color);
-}
-
-.features-section {
-    background-color: #f8f9fc;
-}
-
+/* 5. FEATURE CARDS (Fitur Kami) */
 .feature-card {
     background: #fff;
     border-radius: 12px;
@@ -178,6 +187,7 @@ html {
     margin: 0;
 }
 
+/* 6. NEWS CARDS (Berita & Artikel) */
 .news-card {
     border-radius: 14px;
     overflow: hidden;
@@ -204,19 +214,17 @@ html {
     transition: transform 0.6s ease;
 }
 
-.news-card:hover .card-img-top {
-    transform: scale(1.08);
-}
-
 .news-card .img-wrapper::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom,
-            rgba(0, 0, 0, 0) 0%,
-            rgba(0, 0, 0, 0.4) 100%);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%);
     opacity: 0;
     transition: opacity 0.4s ease;
+}
+
+.news-card:hover .card-img-top {
+    transform: scale(1.08);
 }
 
 .news-card:hover .img-wrapper::after {
@@ -269,16 +277,7 @@ html {
     border-top-color: #198754 !important;
 }
 
-@media (max-width: 768px) {
-    .news-card .img-wrapper {
-        height: 200px;
-    }
-
-    .news-card:hover {
-        transform: translateY(-5px);
-    }
-}
-
+/* 7. CERTIFICATE CARDS (Sertifikat & Legalitas) */
 .cert-card {
     display: flex;
     flex-direction: column;
@@ -288,6 +287,7 @@ html {
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     overflow: hidden;
     position: relative;
+    padding: 20px;
 }
 
 .cert-card:hover {
@@ -323,6 +323,18 @@ html {
     position: relative;
 }
 
+.cert-icon-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.5s ease;
+    z-index: 0;
+}
+
 .cert-icon-wrap i {
     font-size: 2.2rem;
     transition: transform 0.5s ease;
@@ -331,6 +343,11 @@ html {
 .cert-card:hover .cert-icon-wrap {
     background: #e9ecef;
     transform: scale(1.1);
+}
+
+.cert-card:hover .cert-icon-wrap::before {
+    opacity: 0.08;
+    transform: scale(1.3);
 }
 
 .cert-card:hover .cert-icon-wrap i {
@@ -382,31 +399,12 @@ html {
     box-shadow: 0 6px 15px rgba(252, 193, 7, 0.4);
 }
 
-.cert-icon-wrap::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: currentColor;
-    opacity: 0;
-    transform: scale(0.8);
-    transition: all 0.5s ease;
-    z-index: 0;
-}
-
-.cert-card:hover .cert-icon-wrap::before {
-    opacity: 0.08;
-    transform: scale(1.3);
-}
-
-@media (max-width: 768px) {
-    .cert-desc {
-        min-height: auto;
-    }
-
-    .cert-card:hover {
-        transform: translateY(-5px);
-    }
+/* 8. MAP & FOOTER */
+.map-container iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    display: block;
 }
 
 footer {
@@ -418,4 +416,91 @@ footer {
 
 footer p {
     margin: 0;
+}
+
+/* 9. MEDIA QUERIES (Responsive Design untuk Mobile & Tablet) */
+
+@media (max-width: 991px) {
+    .map-container iframe {
+        min-height: 250px;
+    }
+}
+
+/* --- Mobile (Layar Kecil / HP) --- */
+@media (max-width: 768px) {
+
+    .hero-text h1 {
+        font-size: 2.2rem;
+    }
+
+    .hero-text h2 {
+        font-size: 1.15rem;
+    }
+
+    .section-title {
+        font-size: 1.7rem;
+        margin-bottom: 30px;
+    }
+
+    /* Pengurangan Spacing/Padding agar tidak makan tempat */
+    .section-padding {
+        padding: 50px 0;
+    }
+
+    .hero-section {
+        padding: 100px 0 50px;
+        min-height: auto;
+    }
+
+    /* Penyesuaian Ukuran Kartu/Elemen */
+    .feature-card {
+        padding: 25px 15px;
+    }
+
+    .news-card .img-wrapper {
+        height: 200px;
+    }
+
+    .cert-icon-wrap {
+        width: 70px;
+        height: 70px;
+    }
+
+    .cert-icon-wrap i {
+        font-size: 1.8rem;
+    }
+
+    .cert-desc {
+        min-height: auto;
+        margin-bottom: 15px;
+    }
+
+    /* Pengurangan Efek Hover yang terlalu agresif di Mobile */
+    .news-card:hover,
+    .cert-card:hover {
+        transform: translateY(-5px);
+    }
+}
+
+/* --- Extra Small Mobile (Layar HP Sangat Kecil / iPhone lawas) --- */
+@media (max-width: 576px) {
+    .hero-text h1 {
+        font-size: 1.8rem;
+    }
+
+    .hero-text h2 {
+        font-size: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .section-padding {
+        padding: 40px 0;
+    }
+
+    .hero-section {
+        padding: 90px 0 40px;
+    }
 }

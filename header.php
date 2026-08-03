@@ -35,10 +35,10 @@
                         <a class="nav-link" href="#fitur">Fitur Kami</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#berita">Berita</a>
+                        <a class="nav-link" href="#sertifikat">Sertifikat</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#sertifikat">Sertifikat</a>
+                        <a class="nav-link" href="#berita">Berita</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#kontak">Kontak</a>
