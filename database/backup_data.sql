@@ -40,3 +40,6 @@ CREATE TABLE certificates (
     file_path VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+INSERT INTO news (title, slug, content, image) VALUES 
+('Falak TV Resmi Diluncurkan untuk Masjid se-Indonesia', 'falak-tv-resmi-diluncurkan', 'Setelah melalui proses pengembangan dan validasi selama 2 tahun, Falak TV kini siap menemani masjid-masjid di seluruh Indonesia.', 'assets/img/berita-1.jpg');
